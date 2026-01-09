@@ -16,3 +16,13 @@ Work in progress. Use only if you are bringing the device up
 | ------------ | -------- |
 | Keyboard     | Works    |
 | USB-A 2.0    | Works    |
+
+# Hardware
+
+| Components | Model |
+| ---------- | ----- |
+| DP-to-HDMI Bridge | ASL CS5263 |
+| Type-C Retimer | Parade PS8830 |
+| EC | ITE IT8987E |
+| Unknown | Genesys GL3510 |
+| Unknown | Parade 8719E |

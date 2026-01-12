@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 /*
- * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
- * Copyright (c) 2025 Zimo Zhang
+ * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+ * Copyright (c) 2025, Linaro Limited
+ * Copyright (c) 2025, Zimo Zhang
  */
 
 /dts-v1/;
@@ -9,15 +10,14 @@
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
 
-#include "x1e80100.dtsi"
-#include "x1e80100-pmics.dtsi"
+#include "hamoa.dtsi"
+#include "hamoa-pmics.dtsi"
 
 / {
-	model = "Qualcomm Technologies, Inc. X1E80100 QCP";
-	compatible = "qcom,x1e78100", "qcom,x1e80100-qcp", "qcom,x1e80100";
+	model = "Acer SFA14-11";
+	compatible = "qcom,x1e78100", "qcom,x1e80100", "lenovo,thinkpad-t14s";
 
 	aliases {
-		serial0 = &uart21;
 		serial1 = &uart14;
 	};
 
@@ -54,8 +54,7 @@
 		#address-cells = <1>;
 		#size-cells = <0>;
 		orientation-gpios = <&tlmm 121 GPIO_ACTIVE_HIGH>,
-				    <&tlmm 123 GPIO_ACTIVE_HIGH>,
-				    <&tlmm 125 GPIO_ACTIVE_HIGH>;
+				    <&tlmm 123 GPIO_ACTIVE_HIGH>;
 
 		connector@0 {
 			compatible = "usb-c-connector";
@@ -79,87 +78,15 @@
 					reg = <1>;
 
 					pmic_glink_ss0_ss_in: endpoint {
-						remote-endpoint = <&usb_1_ss0_qmpphy_out>;
+						remote-endpoint = <&retimer_ss0_ss_out>;
 					};
 				};
 
 				port@2 {
 					reg = <2>;
 
-					pmic_glink_ss0_sbu: endpoint {
-						remote-endpoint = <&usb_1_ss0_sbu_mux>;
-					};
-				};
-			};
-		};
-
-		connector@1 {
-			compatible = "usb-c-connector";
-			reg = <1>;
-			power-role = "dual";
-			data-role = "dual";
-
-			ports {
-				#address-cells = <1>;
-				#size-cells = <0>;
-
-				port@0 {
-					reg = <0>;
-
-					pmic_glink_ss1_hs_in: endpoint {
-						remote-endpoint = <&usb_1_ss1_dwc3_hs>;
-					};
-				};
-
-				port@1 {
-					reg = <1>;
-
-					pmic_glink_ss1_ss_in: endpoint {
-						remote-endpoint = <&usb_1_ss1_qmpphy_out>;
-					};
-				};
-
-				port@2 {
-					reg = <2>;
-
-					pmic_glink_ss1_sbu: endpoint {
-						remote-endpoint = <&usb_1_ss1_sbu_mux>;
-					};
-				};
-			};
-		};
-
-		connector@2 {
-			compatible = "usb-c-connector";
-			reg = <2>;
-			power-role = "dual";
-			data-role = "dual";
-
-			ports {
-				#address-cells = <1>;
-				#size-cells = <0>;
-
-				port@0 {
-					reg = <0>;
-
-					pmic_glink_ss2_hs_in: endpoint {
-						remote-endpoint = <&usb_1_ss2_dwc3_hs>;
-					};
-				};
-
-				port@1 {
-					reg = <1>;
-
-					pmic_glink_ss2_ss_in: endpoint {
-						remote-endpoint = <&usb_1_ss2_qmpphy_out>;
-					};
-				};
-
-				port@2 {
-					reg = <2>;
-
-					pmic_glink_ss2_sbu: endpoint {
-						remote-endpoint = <&usb_1_ss2_sbu_mux>;
+					pmic_glink_ss0_con_sbu_in: endpoint {
+						remote-endpoint = <&retimer_ss0_con_sbu_out>;
 					};
 				};
 			};
@@ -259,7 +186,6 @@
 		pinctrl-0 = <&edp_reg_en>;
 		pinctrl-names = "default";
 
-		regulator-always-on;
 		regulator-boot-on;
 	};
 
@@ -275,6 +201,54 @@
 
 		pinctrl-names = "default";
 		pinctrl-0 = <&nvme_reg_en>;
+
+		regulator-boot-on;
+	};
+
+	vreg_rtmr0_1p15: regulator-rtmr0-1p15 {
+		compatible = "regulator-fixed";
+
+		regulator-name = "VREG_RTMR0_1P15";
+		regulator-min-microvolt = <1150000>;
+		regulator-max-microvolt = <1150000>;
+
+		gpio = <&pmc8380_5_gpios 8 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+
+		pinctrl-0 = <&usb0_pwr_1p15_reg_en>;
+		pinctrl-names = "default";
+
+		regulator-boot-on;
+	};
+
+	vreg_rtmr0_1p8: regulator-rtmr0-1p8 {
+		compatible = "regulator-fixed";
+
+		regulator-name = "VREG_RTMR0_1P8";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+
+		gpio = <&pm8550ve_9_gpios 8 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+
+		pinctrl-0 = <&usb0_1p8_reg_en>;
+		pinctrl-names = "default";
+
+		regulator-boot-on;
+	};
+
+	vreg_rtmr0_3p3: regulator-rtmr0-3p3 {
+		compatible = "regulator-fixed";
+
+		regulator-name = "VREG_RTMR0_3P3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+
+		gpio = <&pm8550_gpios 11 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+
+		pinctrl-0 = <&usb0_3p3_reg_en>;
+		pinctrl-names = "default";
 
 		regulator-boot-on;
 	};
@@ -355,63 +329,6 @@
 
 		pinctrl-0 = <&pm_sde7_main_3p3_en>;
 		pinctrl-names = "default";
-};
-
-	usb-1-ss0-sbu-mux {
-		compatible = "onnn,fsusb42", "gpio-sbu-mux";
-
-		enable-gpios = <&tlmm 168 GPIO_ACTIVE_LOW>;
-		select-gpios = <&tlmm 167 GPIO_ACTIVE_HIGH>;
-
-		pinctrl-0 = <&usb_1_ss0_sbu_default>;
-		pinctrl-names = "default";
-
-		mode-switch;
-		orientation-switch;
-
-		port {
-			usb_1_ss0_sbu_mux: endpoint {
-				remote-endpoint = <&pmic_glink_ss0_sbu>;
-			};
-		};
-	};
-
-	usb-1-ss1-sbu-mux {
-		compatible = "onnn,fsusb42", "gpio-sbu-mux";
-
-		enable-gpios = <&tlmm 179 GPIO_ACTIVE_LOW>;
-		select-gpios = <&tlmm 178 GPIO_ACTIVE_HIGH>;
-
-		pinctrl-0 = <&usb_1_ss1_sbu_default>;
-		pinctrl-names = "default";
-
-		mode-switch;
-		orientation-switch;
-
-		port {
-			usb_1_ss1_sbu_mux: endpoint {
-				remote-endpoint = <&pmic_glink_ss1_sbu>;
-			};
-		};
-	};
-
-	usb-1-ss2-sbu-mux {
-		compatible = "onnn,fsusb42", "gpio-sbu-mux";
-
-		enable-gpios = <&tlmm 171 GPIO_ACTIVE_LOW>;
-		select-gpios = <&tlmm 170 GPIO_ACTIVE_HIGH>;
-
-		pinctrl-0 = <&usb_1_ss2_sbu_default>;
-		pinctrl-names = "default";
-
-		mode-switch;
-		orientation-switch;
-
-		port {
-			usb_1_ss2_sbu_mux: endpoint {
-				remote-endpoint = <&pmic_glink_ss2_sbu>;
-			};
-		};
 	};
 
 	wcn7850-pmu {
@@ -472,6 +389,70 @@
 			};
 		};
 	};
+};
+
+&pm8550_gpios {
+	rtmr0_default: rtmr0-reset-n-active-state {
+		pins = "gpio10";
+		function = "normal";
+		power-source = <1>;
+		bias-disable;
+		input-disable;
+		output-enable;
+	};
+
+	usb0_3p3_reg_en: usb0-3p3-reg-en-state {
+		pins = "gpio11";
+		function = "normal";
+		power-source = <1>;
+		bias-disable;
+		input-disable;
+		output-enable;
+	};
+};
+
+&pmc8380_5_gpios {
+	usb0_pwr_1p15_reg_en: usb0-pwr-1p15-reg-en-state {
+		pins = "gpio8";
+		function = "normal";
+		power-source = <1>;
+		bias-disable;
+		input-disable;
+		output-enable;
+	};
+};
+
+&pm8550ve_9_gpios {
+	usb0_1p8_reg_en: usb0-1p8-reg-en-state {
+		pins = "gpio8";
+		function = "normal";
+		power-source = <1>;
+		bias-disable;
+		input-disable;
+		output-enable;
+	};
+};
+
+// USB-C port
+&usb_1_ss0 {
+	status = "okay";
+};
+
+&usb_1_ss0_dwc3 {
+	dr_mode = "host";
+};
+
+&usb_1_ss0_dwc3_hs {
+	remote-endpoint = <&pmic_glink_ss0_hs_in>;
+};
+
+&usb_1_ss0_qmpphy_out {
+	remote-endpoint = <&retimer_ss0_ss_in>;
+};
+
+// FIXME re-enable after enabling efivars
+&pmk8550_rtc {
+	/delete-property/ qcom,uefi-rtc-info;
 };
 
 &apps_rsc {
@@ -826,6 +807,7 @@
 	};
 };
 
+// FIXME
 &gpu {
 	status = "okay";
 
@@ -834,6 +816,118 @@
 	};
 };
 
+// Keyboard and Touchpad
+&i2c0 {
+	clock-frequency = <400000>;
+
+	pinctrl-0 = <&qup_i2c0_data_clk>, <&tpad_default>;
+	pinctrl-names = "default";
+
+	status = "okay";
+
+	/* SYNA8022 or SYNA8024 */
+	touchpad@2c {
+		compatible = "hid-over-i2c";
+		reg = <0x2c>;
+
+		hid-descr-addr = <0x20>;
+		interrupts-extended = <&tlmm 3 IRQ_TYPE_LEVEL_LOW>;
+
+		//vdd-supply = <&vreg_misc_3p3>;
+		//vddl-supply = <&vreg_l12b_1p2>;
+
+		wakeup-source;
+	};
+
+	/* ELAN06F1 or SYNA06F2 */
+	keyboard@3a {
+		compatible = "hid-over-i2c";
+		reg = <0x3a>;
+
+		hid-descr-addr = <0x1>;
+		interrupts-extended = <&tlmm 67 IRQ_TYPE_LEVEL_LOW>;
+
+		//vdd-supply = <&vreg_misc_3p3>;
+		//vddl-supply = <&vreg_l15b_1p8>;
+
+		pinctrl-0 = <&kybd_default>;
+		pinctrl-names = "default";
+
+		wakeup-source;
+	};
+};
+
+&i2c1 {
+	clock-frequency = <400000>;
+
+	status = "okay";
+};
+
+&i2c3 {
+	clock-frequency = <400000>;
+
+	status = "okay";
+
+	// USB-C
+	typec-mux@8 {
+		compatible = "parade,ps8833", "parade,ps8830";
+		reg = <0x08>;
+
+		clocks = <&rpmhcc RPMH_RF_CLK3>;
+
+		vdd-supply = <&vreg_rtmr0_1p15>;
+		vdd33-supply = <&vreg_rtmr0_3p3>;
+		vdd33-cap-supply = <&vreg_rtmr0_3p3>;
+		vddar-supply = <&vreg_rtmr0_1p15>;
+		vddat-supply = <&vreg_rtmr0_1p15>;
+		vddio-supply = <&vreg_rtmr0_1p8>;
+
+		reset-gpios = <&pm8550_gpios 10 GPIO_ACTIVE_LOW>;
+
+		pinctrl-0 = <&rtmr0_default>;
+		pinctrl-names = "default";
+
+		retimer-switch;
+		orientation-switch;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+
+				retimer_ss0_ss_out: endpoint {
+					remote-endpoint = <&pmic_glink_ss0_ss_in>;
+				};
+			};
+
+			port@1 {
+				reg = <1>;
+
+				retimer_ss0_ss_in: endpoint {
+					remote-endpoint = <&usb_1_ss0_qmpphy_out>;
+				};
+			};
+
+			port@2 {
+				reg = <2>;
+
+				retimer_ss0_con_sbu_out: endpoint {
+					remote-endpoint = <&pmic_glink_ss0_con_sbu_in>;
+				};
+			};
+		};
+	};
+};
+
+&i2c4 {
+	clock-frequency = <400000>;
+
+	status = "okay";
+};
+
+// FIXME Did not found NXP chips on board, found ps8719e instead, somehow PTN3222 probed successfully
 &i2c5 {
 	clock-frequency = <400000>;
 
@@ -868,6 +962,21 @@
 	};
 };
 
+&i2c7 {
+	clock-frequency = <400000>;
+
+	status = "okay";
+};
+
+// FIXME for some reason this is broken, though should be working on Windows
+/*
+&i2c8 {
+	clock-frequency = <400000>;
+
+	status = "okay";
+};
+*/
+
 &lpass_tlmm {
 	spkr_01_sd_n_active: spkr-01-sd-n-active-state {
 		pins = "gpio12";
@@ -882,6 +991,8 @@
 	status = "okay";
 };
 
+// DisplayPort from USB-C
+// TODO test
 &mdss_dp0 {
 	status = "okay";
 };
@@ -891,7 +1002,8 @@
 };
 
 &mdss_dp1 {
-	status = "okay";
+	status = "disabled";
+	// status = "okay";
 };
 
 &mdss_dp1_out {
@@ -899,13 +1011,15 @@
 };
 
 &mdss_dp2 {
-	status = "okay";
+	status = "disabled";
+	// status = "okay";
 };
 
 &mdss_dp2_out {
 	link-frequencies = /bits/ 64 <1620000000 2700000000 5400000000 8100000000>;
 };
 
+// Integrated Display
 &mdss_dp3 {
 	/delete-property/ #sound-dai-cells;
 
@@ -915,7 +1029,7 @@
 	status = "okay";
 
 	aux-bus {
-		panel {
+		panel: panel {
 			compatible = "edp-panel";
 			power-supply = <&vreg_edp_3p3>;
 
@@ -1061,33 +1175,20 @@
 };
 
 &remoteproc_adsp {
-	firmware-name = "qcom/x1e80100/adsp.mbn",
-			"qcom/x1e80100/adsp_dtb.mbn";
+	firmware-name = "qcom/x1e80100/ACER/SFA14-11/qcadsp8380.mbn",
+			"qcom/x1e80100/ACER/SFA14-11/adsp_dtbs.elf";
 
 	status = "okay";
 };
 
 &remoteproc_cdsp {
-	firmware-name = "qcom/x1e80100/cdsp.mbn",
-			"qcom/x1e80100/cdsp_dtb.mbn";
+	firmware-name = "qcom/x1e80100/ACER/SFA14-11/qccdsp8380.mbn",
+			"qcom/x1e80100/ACER/SFA14-11/cdsp_dtbs.elf";
 
 	status = "okay";
 };
 
 &smb2360_0 {
-	status = "okay";
-};
-
-&sdhc_2 {
-	cd-gpios = <&tlmm 71 GPIO_ACTIVE_LOW>;
-	pinctrl-0 = <&sdc2_default &sdc2_card_det_n>;
-	pinctrl-1 = <&sdc2_sleep &sdc2_card_det_n>;
-	pinctrl-names = "default", "sleep";
-	vmmc-supply = <&vreg_l9b_2p9>;
-	vqmmc-supply = <&vreg_l6b_1p8>;
-	bus-width = <4>;
-	no-sdio;
-	no-mmc;
 	status = "okay";
 };
 
@@ -1103,19 +1204,6 @@
 &smb2360_1_eusb2_repeater {
 	vdd18-supply = <&vreg_l3d_1p8>;
 	vdd3-supply = <&vreg_l14b_3p0>;
-};
-
-&smb2360_2 {
-	status = "okay";
-};
-
-&smb2360_2_eusb2_repeater {
-	vdd18-supply = <&vreg_l3d_1p8>;
-	vdd3-supply = <&vreg_l8b_3p0>;
-};
-
-&smb2360_3 {
-	status = "okay";
 };
 
 &swr0 {
@@ -1307,54 +1395,6 @@
 
 	};
 
-	usb_1_ss1_sbu_default: usb-1-ss1-sbu-state {
-		mode-pins {
-			pins = "gpio177";
-			function = "gpio";
-			bias-disable;
-			drive-strength = <2>;
-			output-high;
-		};
-
-		oe-n-pins {
-			pins = "gpio179";
-			function = "gpio";
-			bias-disable;
-			drive-strength = <2>;
-		};
-
-		sel-pins {
-			pins = "gpio178";
-			function = "gpio";
-			bias-disable;
-			drive-strength = <2>;
-		};
-	};
-
-	usb_1_ss2_sbu_default: usb-1-ss2-sbu-state {
-		mode-pins {
-			pins = "gpio169";
-			function = "gpio";
-			bias-disable;
-			drive-strength = <2>;
-			output-high;
-		};
-
-		oe-n-pins {
-			pins = "gpio171";
-			function = "gpio";
-			bias-disable;
-			drive-strength = <2>;
-		};
-
-		sel-pins {
-			pins = "gpio170";
-			function = "gpio";
-			bias-disable;
-			drive-strength = <2>;
-		};
-	};
-
 	wcd_default: wcd-reset-n-active-state {
 		pins = "gpio191";
 		function = "gpio";
@@ -1395,11 +1435,6 @@
 	};
 };
 
-&uart21 {
-	compatible = "qcom,geni-debug-uart";
-	status = "okay";
-};
-
 &usb_1_ss0_hsphy {
 	vdd-supply = <&vreg_l3j_0p8>;
 	vdda12-supply = <&vreg_l2j_1p2>;
@@ -1416,86 +1451,7 @@
 	status = "okay";
 };
 
-&usb_1_ss0 {
-	status = "okay";
-};
-
-&usb_1_ss0_dwc3 {
-	dr_mode = "host";
-};
-
-&usb_1_ss0_dwc3_hs {
-	remote-endpoint = <&pmic_glink_ss0_hs_in>;
-};
-
-&usb_1_ss0_qmpphy_out {
-	remote-endpoint = <&pmic_glink_ss0_ss_in>;
-};
-
-&usb_1_ss1_hsphy {
-	vdd-supply = <&vreg_l3j_0p8>;
-	vdda12-supply = <&vreg_l2j_1p2>;
-
-	phys = <&smb2360_1_eusb2_repeater>;
-
-	status = "okay";
-};
-
-&usb_1_ss1_qmpphy {
-	vdda-phy-supply = <&vreg_l2j_1p2>;
-	vdda-pll-supply = <&vreg_l2d_0p9>;
-
-	status = "okay";
-};
-
-&usb_1_ss1 {
-	status = "okay";
-};
-
-&usb_1_ss1_dwc3 {
-	dr_mode = "host";
-};
-
-&usb_1_ss1_dwc3_hs {
-	remote-endpoint = <&pmic_glink_ss1_hs_in>;
-};
-
-&usb_1_ss1_qmpphy_out {
-	remote-endpoint = <&pmic_glink_ss1_ss_in>;
-};
-
-&usb_1_ss2_hsphy {
-	vdd-supply = <&vreg_l3j_0p8>;
-	vdda12-supply = <&vreg_l2j_1p2>;
-
-	phys = <&smb2360_2_eusb2_repeater>;
-
-	status = "okay";
-};
-
-&usb_1_ss2_qmpphy {
-	vdda-phy-supply = <&vreg_l2j_1p2>;
-	vdda-pll-supply = <&vreg_l2d_0p9>;
-
-	status = "okay";
-};
-
-&usb_1_ss2 {
-	status = "okay";
-};
-
-&usb_1_ss2_dwc3 {
-	dr_mode = "host";
-};
-
-&usb_1_ss2_dwc3_hs {
-	remote-endpoint = <&pmic_glink_ss2_hs_in>;
-};
-
-&usb_1_ss2_qmpphy_out {
-	remote-endpoint = <&pmic_glink_ss2_ss_in>;
-};
-
+//FIXME
 &usb_mp {
 	status = "okay";
 };
@@ -1530,4 +1486,18 @@
 	vdda-pll-supply = <&vreg_l3c_0p8>;
 
 	status = "okay";
+};
+
+&tlmm {
+	tpad_default: tpad-default-state {
+		pins = "gpio3";
+		function = "gpio";
+		bias-pull-up;
+	};
+
+	kybd_default: kybd-default-state {
+		pins = "gpio67";
+		function = "gpio";
+		bias-disable;
+	};
 };

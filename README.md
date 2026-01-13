@@ -21,12 +21,11 @@ Work in progress. Use only if you are bringing the device up
 | USB DP Alt Mode      | Not tested      |
 | HDMI                 | Broken          |
 | Integrated display   | Works           |
-| Backlight            | Works [^2]      |
+| Backlight            | Works           |
 | NVMe                 | Works           |
 | Battery indicator    | Works           |
 
 [^1]: Requires OEM firmware
-[^2]: Only tested on some devices. Brightness mapping is incorrect (system shows higher brightness but actual brightness is lower)
 
 # Hardware
 
@@ -37,3 +36,7 @@ Work in progress. Use only if you are bringing the device up
 | EC | ITE IT8987E |
 | Unknown | Genesys GL3510 |
 | Unknown | Parade 8719E |
+
+# Benchmark
+
+[Geekbench 6.5.0 Preview](https://browser.geekbench.com/v6/cpu/16064997)

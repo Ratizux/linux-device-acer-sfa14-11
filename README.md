@@ -1,6 +1,6 @@
 # Acer SFA14-11 Device Tree
 
-Heavily based on `x1e80100-qcp` and `x1e78100-lenovo-thinkpad-t14s` Device Trees
+
 
 # Disclaimer
 
@@ -24,6 +24,8 @@ Work in progress. Use only if you are bringing the device up
 | Backlight            | Works           |
 | NVMe                 | Works           |
 | Battery indicator    | Works           |
+| Integrated Camera    | Works           |
+| Fingerprint          | Not tested      |
 
 [^1]: Requires OEM firmware
 
@@ -36,7 +38,15 @@ Work in progress. Use only if you are bringing the device up
 | EC | ITE IT8987E |
 | Unknown | Genesys GL3510 |
 | Unknown | Parade 8719E |
+| Integrated Camera | Sunplus 1bcf:28c4 |
+| Fingerprint | Realtek 3274:9003 |
 
 # Benchmark
 
 [Geekbench 6.5.0 Preview](https://browser.geekbench.com/v6/cpu/16064997)
+
+# Credits
+
+This Device Tree was heavily based on `x1e80100-qcp` and `x1e78100-lenovo-thinkpad-t14s`.
+
+Thanks to @alexVinarskis and @ziyao233 who provided great help in PWM backlight configuration

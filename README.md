@@ -24,6 +24,10 @@ Work in progress. Use only if you are bringing the device up
 | Battery indicator    | Works           |
 | Integrated Camera    | Works           |
 | Fingerprint          | Not tested      |
+| Wi-Fi                | Partial [^1]    |
+| Bluetooth            | Partial [^1]    |
+
+[^1]: Probing Bluetooth may cause Wi-Fi to down
 
 # Required OEM firmware
 

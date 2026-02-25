@@ -2,7 +2,7 @@
 
 # Disclaimer
 
-This configuration is only tested under Linaro `linux-qcom-laptops-v6.19-rc3` tree with a device of `1.00` firmware version.
+This configuration is only tested under Linaro `linux-qcom-laptops-v6.19-rc4` tree with a device of `1.00` firmware version.
 
 Booting Linux may break your device. Use at your own risk.
 

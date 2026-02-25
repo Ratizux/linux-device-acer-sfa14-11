@@ -12,20 +12,20 @@ Work in progress. Use only if you are bringing the device up
 
 | Components           | Status          |
 | -------------------- | --------------- |
-| Keyboard             | Works           |
-| USB-A 2.0            | Works           |
+| Backlight            | Works           |
+| Battery indicator    | Works           |
+| Bluetooth            | Partial [^1]    |
+| Fingerprint          | Not tested      |
 | GPU                  | Works           |
+| HDMI                 | Broken          |
+| Integrated camera    | Works           |
+| Integrated display   | Works           |
+| Keyboard             | Works           |
+| NVMe                 | Works           |
 | Touchpad             | Works           |
 | USB DP Alt Mode      | Not tested      |
-| HDMI                 | Broken          |
-| Integrated display   | Works           |
-| Backlight            | Works           |
-| NVMe                 | Works           |
-| Battery indicator    | Works           |
-| Integrated Camera    | Works           |
-| Fingerprint          | Not tested      |
+| USB-A 2.0            | Works           |
 | Wi-Fi                | Partial [^1]    |
-| Bluetooth            | Partial [^1]    |
 
 [^1]: Probing Bluetooth may cause Wi-Fi to down
 
@@ -33,8 +33,8 @@ Work in progress. Use only if you are bringing the device up
 
 | File | Used by | One possible SHA256 |
 | ---- | ------- | ------------------- |
-| `qcsubsys_ext_adsp8380/qcadsp8380.mbn` | remoteproc ADSP (Battery indicator) | `06ab48b24edcaf698c5e0690c7874ed487add997694730986eec3f428ddc66df` |
-| `qcsubsys_ext_adsp8380/adsp_dtbs.elf` | remoteproc ADSP (Battery indicator) | `21b3c65409d8ed4f7d660f8d706c6018ec680cd3dffe2fd31631feeef4d131d6` |
+| `qcsubsys_ext_adsp8380/qcadsp8380.mbn` | remoteproc ADSP | `06ab48b24edcaf698c5e0690c7874ed487add997694730986eec3f428ddc66df` |
+| `qcsubsys_ext_adsp8380/adsp_dtbs.elf` | remoteproc ADSP | `21b3c65409d8ed4f7d660f8d706c6018ec680cd3dffe2fd31631feeef4d131d6` |
 | `qcsubsys_ext_cdsp8380/qccdsp8380.mbn` | remoteproc CDSP | `d3877b0cadf55b67dd77610fc7082175cb8e862a96e019553aa4b399d10eac51` |
 | `qcsubsys_ext_cdsp8380/cdsp_dtbs.elf` | remoteproc CDSP | `99cf5af4c2503e94fd4f7f65ddf529d9d8ecd20fee293d22c1f049069942b453` |
 
@@ -53,6 +53,12 @@ Work in progress. Use only if you are bringing the device up
 # Benchmark
 
 [Geekbench 6.5.0 Preview](https://browser.geekbench.com/v6/cpu/16064997)
+
+# Bugs
+
+## Resolved
+
+[https://bugzilla.kernel.org/show_bug.cgi?id=220998](https://bugzilla.kernel.org/show_bug.cgi?id=220998)
 
 # Credits
 

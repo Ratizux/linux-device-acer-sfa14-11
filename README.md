@@ -71,6 +71,8 @@ Invoke `speaker-test -D hw:0,1 -c 4 -t wav` to test.
 
 [Geekbench 6.5.0 Preview](https://browser.geekbench.com/v6/cpu/16064997)
 
+[NCNN](https://github.com/Tencent/ncnn/blob/master/benchmark/README.md#qualcomm-snapdragon-x-elite-x1e78100-oryon-34ghz-x-12--adreno-x1-85)
+
 # Bugs
 
 ## Resolved

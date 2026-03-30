@@ -42,6 +42,8 @@ Install `alsa-ucm-conf/ucm2` to `/usr/share/alsa/ucm2`.
 
 Invoke `alsaucm listcards` to see if configuration is detected.
 
+Explicitly set UCM config by `alsaucm set _verb HiFi`.
+
 Default volume level is **very high**, make sure to lower `WSA WSA_RX0/1 Digital Volume` and `WSA2 WSA_RX0/1 Digital Volume` to around `5`(alsamixer) or `48`(amixer).
 
 Invoke `speaker-test -D hw:0,1 -c 4 -t wav` to test.

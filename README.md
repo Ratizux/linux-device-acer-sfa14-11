@@ -15,8 +15,8 @@ Work in progress. Use only if you are bringing the device up
 | Audio                | Partial         |
 | Backlight            | Works           |
 | Battery indicator    | Works           |
-| Bluetooth            | Partial [^1]    |
-| Fingerprint          | Not tested      |
+| Bluetooth            | Partial    [^1] |
+| Fingerprint          | Broken     [^3] |
 | GPU                  | Works           |
 | HDMI                 | Works           |
 | Integrated camera    | Works           |
@@ -24,12 +24,15 @@ Work in progress. Use only if you are bringing the device up
 | Keyboard             | Works           |
 | NVMe                 | Works           |
 | Touchpad             | Works           |
-| USB DP Alt Mode      | Partial [^2]    |
+| USB DP Alt Mode      | Partial    [^2] |
 | USB-A 2.0/3.0        | Works           |
-| Wi-Fi                | Partial [^1]    |
+| USB-C Host 2.0       | Works           |
+| USB-C Host 3.0       | Broken          |
+| Wi-Fi                | Partial    [^1] |
 
 [^1]: Probing Bluetooth may cause Wi-Fi to down
 [^2]: Could not recognize USB-C dock while power cable is present
+[^3]: No driver
 
 # HowTo
 

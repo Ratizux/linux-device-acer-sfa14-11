@@ -128,8 +128,7 @@
 			     "qcom,pmic-glink";
 		#address-cells = <1>;
 		#size-cells = <0>;
-		orientation-gpios = <&tlmm 121 GPIO_ACTIVE_HIGH>,
-				    <&tlmm 123 GPIO_ACTIVE_HIGH>;
+		orientation-gpios = <&tlmm 121 GPIO_ACTIVE_HIGH>;
 
 		connector@0 {
 			compatible = "usb-c-connector";
@@ -307,22 +306,6 @@
 		regulator-boot-on;
 	};
 
-	vreg_edp_bl: regulator-edp-bl {
-		compatible = "regulator-fixed";
-
-		regulator-name = "VBL9";
-		regulator-min-microvolt = <3600000>;
-		regulator-max-microvolt = <3600000>;
-
-		gpio = <&pmc8380_3_gpios 10 GPIO_ACTIVE_HIGH>;
-		enable-active-high;
-
-		pinctrl-0 = <&edp_bl_reg_en>;
-		pinctrl-names = "default";
-
-		regulator-boot-on;
-	};
-
 	vreg_misc_3p3: regulator-misc-3p3 {
 		compatible = "regulator-fixed";
 
@@ -353,17 +336,6 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&nvme_reg_en>;
 
-		regulator-boot-on;
-	};
-
-	vph_pwr: vph-pwr-regulator {
-		compatible = "regulator-fixed";
-
-		regulator-name = "vph_pwr";
-		regulator-min-microvolt = <3700000>;
-		regulator-max-microvolt = <3700000>;
-
-		regulator-always-on;
 		regulator-boot-on;
 	};
 
@@ -451,46 +423,15 @@
 		regulator-boot-on;
 	};
 
-	vreg_pcie_12v: regulator-pcie-12v {
+	vph_pwr: vph-pwr-regulator {
 		compatible = "regulator-fixed";
 
-		regulator-name = "VREG_PCIE_12V";
-		regulator-min-microvolt = <12000000>;
-		regulator-max-microvolt = <12000000>;
+		regulator-name = "vph_pwr";
+		regulator-min-microvolt = <3700000>;
+		regulator-max-microvolt = <3700000>;
 
-		gpio = <&pm8550ve_8_gpios 8 GPIO_ACTIVE_HIGH>;
-		enable-active-high;
-
-		pinctrl-0 = <&pcie_x8_12v>;
-		pinctrl-names = "default";
-	};
-
-	vreg_pcie_3v3_aux: regulator-pcie-3v3-aux {
-		compatible = "regulator-fixed";
-
-		regulator-name = "VREG_PCIE_3P3_AUX";
-		regulator-min-microvolt = <3300000>;
-		regulator-max-microvolt = <3300000>;
-
-		gpio = <&pmc8380_3_gpios 8 GPIO_ACTIVE_HIGH>;
-		enable-active-high;
-
-		pinctrl-0 = <&pm_sde7_aux_3p3_en>;
-		pinctrl-names = "default";
-	};
-
-	vreg_pcie_3v3: regulator-pcie-3v3 {
-		compatible = "regulator-fixed";
-
-		regulator-name = "VREG_PCIE_3P3";
-		regulator-min-microvolt = <3300000>;
-		regulator-max-microvolt = <3300000>;
-
-		gpio = <&pmc8380_3_gpios 6 GPIO_ACTIVE_HIGH>;
-		enable-active-high;
-
-		pinctrl-0 = <&pm_sde7_main_3p3_en>;
-		pinctrl-names = "default";
+		regulator-always-on;
+		regulator-boot-on;
 	};
 
 	wcn7850-pmu {
@@ -962,7 +903,7 @@
 
 	// USB-C
 	typec-mux@8 {
-		compatible = "parade,ps8833", "parade,ps8830";
+		compatible = "parade,ps8830";
 		reg = <0x08>;
 
 		clocks = <&rpmhcc RPMH_RF_CLK3>;
@@ -1258,15 +1199,6 @@
 		power-source = <1>; /* 1.8 V */
 		qcom,drive-strength = <PMIC_GPIO_STRENGTH_LOW>;
 	};
-
-	pcie_x8_12v: pcie-12v-default-state {
-		pins = "gpio8";
-		function = "normal";
-		output-enable;
-		output-high;
-		bias-pull-down;
-		power-source = <0>;
-	};
 };
 
 &pm8550ve_9_gpios {
@@ -1277,26 +1209,6 @@
 		bias-disable;
 		input-disable;
 		output-enable;
-	};
-};
-
-&pmc8380_3_gpios {
-	pm_sde7_aux_3p3_en: pcie-aux-3p3-default-state {
-		pins = "gpio8";
-		function = "normal";
-		output-enable;
-		output-high;
-		bias-pull-down;
-		power-source = <0>;
-	};
-
-	pm_sde7_main_3p3_en: pcie-main-3p3-default-state {
-		pins = "gpio6";
-		function = "normal";
-		output-enable;
-		output-high;
-		bias-pull-down;
-		power-source = <0>;
 	};
 };
 
@@ -1327,24 +1239,6 @@
 	status = "okay";
 };
 
-&smb2360_0 {
-	status = "okay";
-};
-
-&smb2360_0_eusb2_repeater {
-	vdd18-supply = <&vreg_l3d_1p8>;
-	vdd3-supply = <&vreg_l2b_3p0>;
-};
-
-&smb2360_1 {
-	status = "okay";
-};
-
-&smb2360_1_eusb2_repeater {
-	vdd18-supply = <&vreg_l3d_1p8>;
-	vdd3-supply = <&vreg_l14b_3p0>;
-};
-
 // Audio, battery indicator etc.
 &remoteproc_adsp {
 	firmware-name = "qcom/x1e80100/ACER/SFA14-11/qcadsp8380.mbn",
@@ -1358,6 +1252,15 @@
 			"qcom/x1e80100/ACER/SFA14-11/cdsp_dtbs.elf";
 
 	status = "okay";
+};
+
+&smb2360_0 {
+	status = "okay";
+};
+
+&smb2360_0_eusb2_repeater {
+	vdd18-supply = <&vreg_l3d_1p8>;
+	vdd3-supply = <&vreg_l2b_3p0>;
 };
 
 &swr0 {
@@ -1393,7 +1296,6 @@
 
 &swr1 {
 	status = "okay";
-	// status = "disabled";
 
 	/* WCD9385 RX */
 	wcd_rx: codec@0,4 {
@@ -1405,7 +1307,6 @@
 
 &swr2 {
 	status = "okay";
-	// status = "disabled";
 
 	/* WCD9385 TX */
 	wcd_tx: codec@0,3 {
@@ -1455,6 +1356,48 @@
 		pins = "gpio70";
 		function = "gpio";
 		drive-strength = <16>;
+		bias-disable;
+	};
+
+	eusb3_reset_n: eusb3-reset-n-state {
+		pins = "gpio6";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-disable;
+		output-low;
+	};
+
+	eusb6_reset_n: eusb6-reset-n-state {
+		pins = "gpio184";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-disable;
+		output-low;
+	};
+
+	eusb9_reset_n: eusb9-reset-n-state {
+		pins = "gpio7";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-disable;
+		output-low;
+	};
+
+	hall_int_n_default: hall-int-n-state {
+		pins = "gpio92";
+		function = "gpio";
+		bias-disable;
+	};
+
+	hdmi_hpd_default: hdmi-hpd-default-state {
+		pins = "gpio126";
+		function = "usb2_dp";
+		bias-disable;
+	};
+
+	kybd_default: kybd-default-state {
+		pins = "gpio67";
+		function = "gpio";
 		bias-disable;
 	};
 
@@ -1511,29 +1454,10 @@
 		};
 	};
 
-	usb_1_ss0_sbu_default: usb-1-ss0-sbu-state {
-		mode-pins {
-			pins = "gpio166";
-			function = "gpio";
-			bias-disable;
-			drive-strength = <2>;
-			output-high;
-		};
-
-		oe-n-pins {
-			pins = "gpio168";
-			function = "gpio";
-			bias-disable;
-			drive-strength = <2>;
-		};
-
-		sel-pins {
-			pins = "gpio167";
-			function = "gpio";
-			bias-disable;
-			drive-strength = <2>;
-		};
-
+	tpad_default: tpad-default-state {
+		pins = "gpio3";
+		function = "gpio";
+		bias-pull-up;
 	};
 
 	wcd_default: wcd-reset-n-active-state {
@@ -1557,54 +1481,6 @@
 		drive-strength = <2>;
 		bias-disable;
 	};
-
-	eusb3_reset_n: eusb3-reset-n-state {
-		pins = "gpio6";
-		function = "gpio";
-		drive-strength = <2>;
-		bias-disable;
-		output-low;
-	};
-
-	eusb6_reset_n: eusb6-reset-n-state {
-		pins = "gpio184";
-		function = "gpio";
-		drive-strength = <2>;
-		bias-disable;
-		output-low;
-	};
-
-	eusb9_reset_n: eusb9-reset-n-state {
-		pins = "gpio7";
-		function = "gpio";
-		drive-strength = <2>;
-		bias-disable;
-		output-low;
-	};
-
-	hall_int_n_default: hall-int-n-state {
-		pins = "gpio92";
-		function = "gpio";
-		bias-disable;
-	};
-
-	hdmi_hpd_default: hdmi-hpd-default-state {
-		pins = "gpio126";
-		function = "usb2_dp";
-		bias-disable;
-	};
-
-	kybd_default: kybd-default-state {
-		pins = "gpio67";
-		function = "gpio";
-		bias-disable;
-	};
-
-	tpad_default: tpad-default-state {
-		pins = "gpio3";
-		function = "gpio";
-		bias-pull-up;
-	};
 };
 
 // USB-C port
@@ -1618,6 +1494,22 @@
 
 &usb_1_ss0_dwc3_hs {
 	remote-endpoint = <&pmic_glink_ss0_hs_in>;
+};
+
+&usb_1_ss0_hsphy {
+	vdd-supply = <&vreg_l3j_0p8>;
+	vdda12-supply = <&vreg_l2j_1p2>;
+
+	phys = <&smb2360_0_eusb2_repeater>;
+
+	status = "okay";
+};
+
+&usb_1_ss0_qmpphy {
+	vdda-phy-supply = <&vreg_l2j_1p2>;
+	vdda-pll-supply = <&vreg_l1j_0p8>;
+
+	status = "okay";
 };
 
 &usb_1_ss0_qmpphy_out {
@@ -1650,6 +1542,24 @@
 			/* No USB3 lanes connected */
 		};
 	};
+};
+
+// USB used by integrated UVC camera
+&usb_2 {
+	status = "okay";
+};
+
+&usb_2_dwc3 {
+	dr_mode = "host";
+};
+
+&usb_2_hsphy {
+	vdd-supply = <&vreg_l2e_0p8>;
+	vdda12-supply = <&vreg_l3e_1p2>;
+
+	phys = <&eusb9_repeater>;
+
+	status = "okay";
 };
 
 // Fingerprint, all USB-A ports
@@ -1686,41 +1596,6 @@
 &usb_mp_qmpphy1 {
 	vdda-phy-supply = <&vreg_l3e_1p2>;
 	vdda-pll-supply = <&vreg_l3c_0p8>;
-
-	status = "okay";
-};
-
-// most likely unused
-&usb_1_ss0_hsphy {
-	vdd-supply = <&vreg_l3j_0p8>;
-	vdda12-supply = <&vreg_l2j_1p2>;
-
-	phys = <&smb2360_0_eusb2_repeater>;
-
-	status = "okay";
-};
-
-&usb_1_ss0_qmpphy {
-	vdda-phy-supply = <&vreg_l2j_1p2>;
-	vdda-pll-supply = <&vreg_l1j_0p8>;
-
-	status = "okay";
-};
-
-// USB used by integrated UVC camera
-&usb_2 {
-	status = "okay";
-};
-
-&usb_2_dwc3 {
-	dr_mode = "host";
-};
-
-&usb_2_hsphy {
-	vdd-supply = <&vreg_l2e_0p8>;
-	vdda12-supply = <&vreg_l3e_1p2>;
-
-	phys = <&eusb9_repeater>;
 
 	status = "okay";
 };

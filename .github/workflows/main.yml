@@ -1,0 +1,79 @@
+name: Build DTB and Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag name to create (e.g., v0.1.0)"
+        required: true
+        type: string
+      kernel_repo:
+        description: "Kernel git repo URL (optional)"
+        required: false
+        default: "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
+        type: string
+      kernel_ref:
+        description: "Kernel branch/tag (optional)"
+        required: false
+        default: "v6.19-rc8"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install device-tree-compiler
+        run: sudo apt-get update && sudo apt-get install -y device-tree-compiler
+
+      - name: Fetch kernel DTS sources
+        run: |
+          set -euo pipefail
+          KERNEL_REPO="${{ github.event_name == 'workflow_dispatch' && inputs.kernel_repo || 'https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git' }}"
+          KERNEL_REF="${{ github.event_name == 'workflow_dispatch' && inputs.kernel_ref || 'v6.19-rc8' }}"
+          git clone --depth 1 --branch "$KERNEL_REF" "$KERNEL_REPO" linux-src
+
+      - name: Build DTBs
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          KERNEL_DTS="linux-src/arch/arm64/boot/dts/qcom"
+          KERNEL_DTS_ROOT="linux-src/arch/arm64/boot/dts"
+          KERNEL_INCLUDE="linux-src/include"
+          for dts in *.dts; do
+            [ -f "$dts" ] || continue
+            pp="dist/${dts%.dts}.pp.dts"
+            dtb="dist/${dts%.dts}.dtb"
+            cpp -nostdinc -undef -x assembler-with-cpp \
+              -I . -I config \
+              -I "$KERNEL_DTS" -I "$KERNEL_DTS_ROOT" \
+              -I "$KERNEL_INCLUDE" -I "$KERNEL_INCLUDE/dt-bindings" \
+              "$dts" > "$pp"
+            dtc -I dts -O dtb -o "$dtb" "$pp"
+            echo "Built $dtb"
+          done
+
+      - name: Create tag (workflow_dispatch only)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git tag -a "${{ inputs.tag }}" -m "Release ${{ inputs.tag }}"
+          git push origin "${{ inputs.tag }}"
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          files: dist/*.dtb

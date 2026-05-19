@@ -10,6 +10,16 @@ on:
         description: "Tag name to create (e.g., v0.1.0)"
         required: true
         type: string
+      kernel_repo:
+        description: "Kernel git repo URL (optional)"
+        required: false
+        default: "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
+        type: string
+      kernel_ref:
+        description: "Kernel branch/tag (optional)"
+        required: false
+        default: "v6.19-rc8"
+        type: string
 
 permissions:
   contents: write
@@ -26,10 +36,12 @@ jobs:
       - name: Install device-tree-compiler
         run: sudo apt-get update && sudo apt-get install -y device-tree-compiler
 
-      - name: Fetch kernel DTS sources (Linaro linux-qcom-laptops)
+      - name: Fetch kernel DTS sources
         run: |
           set -euo pipefail
-          git clone --depth 1 --branch linux-qcom-laptops-v6.19-rc8 https://github.com/linaro/linux.git linux-src
+          KERNEL_REPO="${{ github.event_name == 'workflow_dispatch' && inputs.kernel_repo || 'https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git' }}"
+          KERNEL_REF="${{ github.event_name == 'workflow_dispatch' && inputs.kernel_ref || 'v6.19-rc8' }}"
+          git clone --depth 1 --branch "$KERNEL_REF" "$KERNEL_REPO" linux-src
 
       - name: Build DTBs
         run: |

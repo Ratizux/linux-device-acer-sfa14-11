@@ -1,0 +1,54 @@
+name: Build DTB and Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag name to create (e.g., v0.1.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install device-tree-compiler
+        run: sudo apt-get update && sudo apt-get install -y device-tree-compiler
+
+      - name: Build DTBs
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          # Compile all top-level .dts files into .dtb
+          for dts in *.dts; do
+            [ -f "$dts" ] || continue
+            dtb="dist/${dts%.dts}.dtb"
+            dtc -I dts -O dtb -i . -i config -o "$dtb" "$dts"
+            echo "Built $dtb"
+          done
+
+      - name: Create tag (workflow_dispatch only)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git tag -a "${{ inputs.tag }}" -m "Release ${{ inputs.tag }}"
+          git push origin "${{ inputs.tag }}"
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          files: dist/*.dtb
